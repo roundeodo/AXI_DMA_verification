@@ -1,0 +1,80 @@
+# vsim -c "+nowarnTSCALE" -voptargs="+acc" -classdebug -L ./work -l load.log top_tb 
+# Start time: 22:15:58 on Jun 12,2026
+# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_355435/linux_x86_64_gcc-7.4.0/export_tramp.so
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# //  Questa Sim-64
+# //  Version 2022.4 linux_x86_64 Oct 18 2022
+# //
+# //  Copyright 1991-2022 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# ** Note: (vsim-8785) UVM-aware debugging capabilities will be disabled since no compiled "questa_uvm_pkg" can be found.
+# This also means that later if you turn on UVM-aware debugging your debug simulations may have
+# different random seeds from your non-debug simulations.
+# Loading sv_std.std
+# Loading work.axi_dma_if(fast)
+# Loading work.uvm_pkg(fast)
+# Loading work.uvm_pkg_sv_unit(fast)
+# Loading work.top_tb(fast)
+# Loading work.axi_dma_if(fast__2)
+# Loading work.axi_dma_rd(fast)
+# Compiling /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_355435/linux_x86_64_gcc-7.4.0/exportwrapper.c
+# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_355435/linux_x86_64_gcc-7.4.0/vsim_auto_compile.so
+# hexadecimal
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_root.svh(392) @ 0: reporter [UVM/RELNOTES] 
+# ----------------------------------------------------------------
+# UVM-1.2
+# (C) 2007-2014 Mentor Graphics Corporation
+# (C) 2007-2014 Cadence Design Systems, Inc.
+# (C) 2006-2014 Synopsys, Inc.
+# (C) 2011-2013 Cypress Semiconductor Corp.
+# (C) 2013-2014 NVIDIA Corporation
+# ----------------------------------------------------------------
+# 
+#   ***********       IMPORTANT RELEASE NOTES         ************
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_NO_DEPRECATED undefined.
+#   See http://www.eda.org/svdb/view.php?id=3313 for more details.
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_OBJECT_DO_NOT_NEED_CONSTRUCTOR undefined.
+#   See http://www.eda.org/svdb/view.php?id=3770 for more details.
+# 
+#       (Specify +UVM_NO_RELNOTES to turn off this notice)
+# 
+# UVM_INFO @ 0: reporter [RNTST] Running test base_test...
+# UVM_INFO ./tests/base_test.sv(15) @ 0: uvm_test_top [BASE_TEST] build_phase entered
+# UVM_INFO ./tests/base_test.sv(21) @ 0: uvm_test_top [BASE_TEST] Got virtual axi_dma_if from uvm_config_db
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_traversal.svh(279) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+# UVM_INFO ./tests/base_test.sv(26) @ 0: uvm_test_top [BASE_TEST] run_phase entered
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_objection.svh(1270) @ 100000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_report_server.svh(847) @ 100000: reporter [UVM/REPORT/SERVER] 
+# --- UVM Report Summary ---
+# 
+# ** Report counts by severity
+# UVM_INFO :    7
+# UVM_WARNING :    0
+# UVM_ERROR :    0
+# UVM_FATAL :    0
+# ** Report counts by id
+# [BASE_TEST]     3
+# [RNTST]     1
+# [TEST_DONE]     1
+# [UVM/COMP/NAMECHECK]     1
+# [UVM/RELNOTES]     1
+# 
+# ** Note: $finish    : /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_root.svh(517)
+#    Time: 100 ns  Iteration: 68  Instance: /top_tb
+# End time: 22:16:03 on Jun 12,2026, Elapsed time: 0:00:05
+# Errors: 0, Warnings: 1

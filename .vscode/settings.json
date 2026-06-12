@@ -1,0 +1,68 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "files.associations": {
+        "*.sv": "systemverilog",
+        "*.svh": "systemverilogheader",
+        "*.v": "verilog"
+    },
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.wordBasedSuggestions": "on",
+    "editor.snippetSuggestions": "top",
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.showWords": true,
+    "files.exclude": {
+        "uvm_src": true
+    },
+    "search.exclude": {
+        "uvm_src": true
+    },
+    "files.watcherExclude": {
+        "**/uvm_src/**": true
+    },
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "[systemverilog]": {
+        "editor.defaultFormatter": "mshr-h.veriloghdl",
+        "editor.formatOnSave": true,
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": false
+        },
+        "editor.suggestOnTriggerCharacters": true,
+        "editor.tabCompletion": "on"
+    },
+    "[systemverilogheader]": {
+        "editor.defaultFormatter": "mshr-h.veriloghdl",
+        "editor.formatOnSave": true
+    },
+    "[verilog]": {
+        "editor.defaultFormatter": "mshr-h.veriloghdl",
+        "editor.formatOnSave": true
+    },
+    "verilog.formatting.systemVerilog.formatter": "verible-verilog-format",
+    "verilog.formatting.verilogHDL.formatter": "verible-verilog-format",
+    "verilog.formatting.veribleVerilogFormatter.path": "/users/students/r1015673/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli/verible-verilog-format",
+    "verilog.formatting.veribleVerilogFormatter.arguments": "--indentation_spaces=2",
+    "verilog.linting.linter": "verible-verilog-lint",
+    "verilog.linting.path": "/users/students/r1015673/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli",
+    "verilog.linting.veribleVerilogLint.arguments": "--ruleset=none",
+    "verilog.linting.veribleVerilogLint.runAtFileLocation": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "systemverilog.disableIndexing": false,
+    "systemverilog.enableIncrementalIndexing": true,
+    "systemverilog.trace.server": "verbose",
+    "systemverilog.compilerType": "Verilator",
+    "systemverilog.includeIndexing": [
+        "**/*.sv",
+        "**/*.v",
+        "**/*.svh",
+        "/esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/**/*.svh",
+        "/esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/**/*.sv"
+    ],
+    "systemverilog.excludeIndexing": "**/.git/**"
+}

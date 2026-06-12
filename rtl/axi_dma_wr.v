@@ -141,8 +141,8 @@ module axi_dma_wr #
 
 parameter AXI_WORD_WIDTH = AXI_STRB_WIDTH;
 parameter AXI_WORD_SIZE = AXI_DATA_WIDTH/AXI_WORD_WIDTH;
-parameter AXI_BURST_SIZE = $clog2(AXI_STRB_WIDTH);
-parameter AXI_MAX_BURST_SIZE = AXI_MAX_BURST_LEN << AXI_BURST_SIZE;
+parameter AXI_BURST_SIZE = $clog2(AXI_STRB_WIDTH); // 一个beat中包含的字节数
+parameter AXI_MAX_BURST_SIZE = AXI_MAX_BURST_LEN << AXI_BURST_SIZE; // 单次transaction能够搬运的最大总字节数
 
 parameter AXIS_KEEP_WIDTH_INT = AXIS_KEEP_ENABLE ? AXIS_KEEP_WIDTH : 1;
 parameter AXIS_WORD_WIDTH = AXIS_KEEP_WIDTH_INT;
@@ -223,7 +223,7 @@ localparam [2:0]
 reg [2:0] state_reg = STATE_IDLE, state_next;
 
 // datapath control signals
-reg transfer_in_save;
+reg transfer_in_save; // 因为可能要align  所以必须
 reg flush_save;
 reg status_fifo_we;
 
@@ -339,13 +339,13 @@ always @* begin
         shift_axis_tvalid = s_axis_write_data_tvalid;
         shift_axis_tlast = AXIS_LAST_ENABLE && s_axis_write_data_tlast;
         shift_axis_input_tready = 1'b1;
-    end else if (!AXIS_LAST_ENABLE) begin
+    end else if (!AXIS_LAST_ENABLE) begin // 先拼接  再移位
         shift_axis_tdata = {s_axis_write_data_tdata, save_axis_tdata_reg} >> ((AXIS_KEEP_WIDTH_INT-offset_reg)*AXIS_WORD_SIZE);
         shift_axis_tkeep = {s_axis_write_data_tkeep, save_axis_tkeep_reg} >> (AXIS_KEEP_WIDTH_INT-offset_reg);
         shift_axis_tvalid = s_axis_write_data_tvalid;
         shift_axis_tlast = 1'b0;
         shift_axis_input_tready = 1'b1;
-    end else if (shift_axis_extra_cycle_reg) begin
+    end else if (shift_axis_extra_cycle_reg) begin // 处理最后一拍  此时没有输入了 
         shift_axis_tdata = {s_axis_write_data_tdata, save_axis_tdata_reg} >> ((AXIS_KEEP_WIDTH_INT-offset_reg)*AXIS_WORD_SIZE);
         shift_axis_tkeep = {{AXIS_KEEP_WIDTH_INT{1'b0}}, save_axis_tkeep_reg} >> (AXIS_KEEP_WIDTH_INT-offset_reg);
         shift_axis_tvalid = 1'b1;
@@ -433,9 +433,9 @@ always @* begin
         STATE_IDLE: begin
             // idle state - load new descriptor to start operation
             flush_save = 1'b1;
-            s_axis_write_desc_ready_next = enable && active_count_av_reg;
+            s_axis_write_desc_ready_next = enable && active_count_av_reg; // 用于追踪outstanding？
 
-            if (ENABLE_UNALIGNED) begin
+            if (ENABLE_UNALIGNED) begin // 支持非对齐的地址  但是else状态就完全不管对不对齐？默认就是对齐的？
                 addr_next = s_axis_write_desc_addr;
                 offset_next = s_axis_write_desc_addr & OFFSET_MASK;
                 strb_offset_mask_next = {AXI_STRB_WIDTH{1'b1}} << (s_axis_write_desc_addr & OFFSET_MASK);
@@ -448,13 +448,13 @@ always @* begin
                 zero_offset_next = 1'b1;
                 last_cycle_offset_next = offset_next + (s_axis_write_desc_len & OFFSET_MASK);
             end
-            tag_next = s_axis_write_desc_tag;
-            op_word_count_next = s_axis_write_desc_len;
-            first_cycle_next = 1'b1;
+            tag_next = s_axis_write_desc_tag; //锁存CPU发过来的这个descriptor的ID
+            op_word_count_next = s_axis_write_desc_len; //所存word 长度
+            first_cycle_next = 1'b1; //
             length_next = 0;
 
             if (s_axis_write_desc_ready && s_axis_write_desc_valid) begin
-                s_axis_write_desc_ready_next = 1'b0;
+                s_axis_write_desc_ready_next = 1'b0; //握手成功，然后就要来处理现在接收进来的这个descriptor
                 state_next = STATE_START;
             end else begin
                 state_next = STATE_IDLE;
@@ -503,18 +503,19 @@ always @* begin
                 end
             end
 
-            if (!m_axi_awvalid_reg && active_count_av_reg) begin
+            if (!m_axi_awvalid_reg && active_count_av_reg) begin // 只有在上一次请求被完成了之后 AW通道是空闲的 才能进一步做后续操作
                 m_axi_awaddr_next = addr_reg;
                 m_axi_awlen_next = output_cycle_count_next;
                 m_axi_awvalid_next = s_axis_write_data_tvalid || !first_cycle_reg;
-
+                // AXI 允许先发AW 再发W 但是有可能发了AW  W还不来 这样就会抢占通道
+                // 所以如果你不是第一个，就允许你先发AW  因为如果是stream，那么数据就已经源源不断地来，不需要等
                 if (m_axi_awvalid_next) begin
                     addr_next = addr_reg + tr_word_count_next;
                     op_word_count_next = op_word_count_reg - tr_word_count_next;
 
                     s_axis_write_data_tready_next = m_axi_wready_int && input_active_next;
 
-                    inc_active = 1'b1;
+                    inc_active = 1'b1; // 用于控制outstanding的计数器？
 
                     state_next = STATE_WRITE;
                 end else begin
@@ -526,18 +527,23 @@ always @* begin
         end
         STATE_WRITE: begin
             s_axis_write_data_tready_next = m_axi_wready_int && (last_transfer_reg || input_active_reg) && shift_axis_input_tready;
-
+            // last transfer reg用于指示当前处于有效输入接收器
+            // shift axis input tready再处理气泡周期的时候会被拉低
             if ((s_axis_write_data_tready && shift_axis_tvalid) || (!input_active_reg && !last_transfer_reg) || !shift_axis_input_tready) begin
+                // 上面对应3种情况  进了block再分别处理   但是核心就是必须要更新状态和内部计数器
+                // 上游发生了数据握手
+                // 输入已经结束（再处理收尾数据）
+                // 移位器在处理上一个周期的残留数据
                 if (s_axis_write_data_tready && s_axis_write_data_tvalid) begin
-                    transfer_in_save = 1'b1;
+                    transfer_in_save = 1'b1; // 用于指示移位寄存器保存当前的input数据
 
                     axis_id_next = s_axis_write_data_tid;
                     axis_dest_next = s_axis_write_data_tdest;
                     axis_user_next = s_axis_write_data_tuser;
                 end
 
-                // update counters
-                if (first_cycle_reg) begin
+                // update counters //用于指示要写入的数据长度  
+                if (first_cycle_reg) begin // length用于记录总写入的数据长度？
                     length_next = length_reg + (AXIS_KEEP_WIDTH_INT - offset_reg);
                 end else begin
                     length_next = length_reg + AXIS_KEEP_WIDTH_INT;
@@ -546,57 +552,64 @@ always @* begin
                     input_cycle_count_next = input_cycle_count_reg - 1;
                     input_active_next = input_cycle_count_reg > 0;
                 end
-                input_last_cycle_next = input_cycle_count_next == 0;
-                output_cycle_count_next = output_cycle_count_reg - 1;
-                output_last_cycle_next = output_cycle_count_next == 0;
+                input_last_cycle_next = input_cycle_count_next == 0; // 用于判断是否要结束了
+                output_cycle_count_next = output_cycle_count_reg - 1; 
+                output_last_cycle_next = output_cycle_count_next == 0;// 如果数据计数器要耗尽了，就要触发总线的WLAST  告诉下游DMA要完成当前descriptor了？
                 first_cycle_next = 1'b0;
                 strb_offset_mask_next = {AXI_STRB_WIDTH{1'b1}};
 
-                m_axi_wdata_int = shift_axis_tdata;
+                m_axi_wdata_int = shift_axis_tdata;  // 驱动 W 通道
                 m_axi_wstrb_int = strb_offset_mask_reg;
                 m_axi_wvalid_int = 1'b1;
 
-                if (AXIS_LAST_ENABLE && s_axis_write_data_tlast) begin
+                if (AXIS_LAST_ENABLE && s_axis_write_data_tlast) begin // 输入源提前拉高TLAST，终止了传输？
                     // end of input frame
                     input_active_next = 1'b0;
                     s_axis_write_data_tready_next = 1'b0;
                 end
 
-                if (AXIS_LAST_ENABLE && shift_axis_tlast) begin
+                if (AXIS_LAST_ENABLE && shift_axis_tlast) begin // 移位器判断是否到了最后一拍  shift会计算残余数据是否在这一拍能够全部输出？ 表示移位寄存器中的最后一拍数据也没了
+                    // 也会被s_axis_write_data_tlast触发
                     // end of data packet
 
                     if (AXIS_KEEP_ENABLE) begin
                         cycle_size = AXIS_KEEP_WIDTH_INT;
                         for (i = AXIS_KEEP_WIDTH_INT-1; i >= 0; i = i - 1) begin
                             if (~shift_axis_tkeep & strb_offset_mask_reg & (1 << i)) begin
-                                cycle_size = i;
+                                // shift axis tkeep是当前输出数据地有效字节mask
+                                // strb offset是地址不对齐时产生的基准mask   这里是在计算当前beat地有效word数？
+                                // 既要考虑地址对齐  又要考虑输入mask
+                                // 在找这一个cycle中最低的有效lane 
+                                cycle_size = i; // 这是上游实际提供的字节长度？  基于shift axis tkeep算出来的
                             end
                         end
                     end else begin
-                        cycle_size = AXIS_KEEP_WIDTH_INT;
+                        cycle_size = AXIS_KEEP_WIDTH_INT; // 如果没有keep信号，则不需要阶段  直接是满载的字数
                     end
 
-                    if (output_last_cycle_reg) begin
+                    if (output_last_cycle_reg) begin // 意味着这是当前transaction的最后一个beat ？  但是不一定是最后一个transaction
                         m_axi_wlast_int = 1'b1;
-
+                        // 一个descriptor拆分成不同的transaction，有的transaction是能完全跑满的，但是有些可能就没对齐？
                         // no more data to transfer, finish operation
-                        if (last_transfer_reg && last_cycle_offset_reg > 0) begin
+                        if (last_transfer_reg && last_cycle_offset_reg > 0) begin  // 是最后一个beat 而且还有offset 意味着没有完美对齐总线
+                        // last transfer reg意味着这是当前descriptor任务的最后一个transaction   
                             if (AXIS_KEEP_ENABLE && !(shift_axis_tkeep & ~({AXI_STRB_WIDTH{1'b1}} >> (AXI_STRB_WIDTH - last_cycle_offset_reg)))) begin
-                                m_axi_wstrb_int = strb_offset_mask_reg & shift_axis_tkeep;
-                                if (first_cycle_reg) begin
+                                m_axi_wstrb_int = strb_offset_mask_reg & shift_axis_tkeep; // 这是descriptor中指定的mask，它和当前本地计算出来的安全边界相同
+                                if (first_cycle_reg) begin // 也是第一个beat，意味着这是个single beat transfer
                                     length_next = length_reg + (cycle_size - offset_reg);
                                 end else begin
                                     length_next = length_reg + cycle_size;
                                 end
                             end else begin
-                                m_axi_wstrb_int = strb_offset_mask_reg & {AXI_STRB_WIDTH{1'b1}} >> (AXI_STRB_WIDTH - last_cycle_offset_reg);
+                                m_axi_wstrb_int = strb_offset_mask_reg & {AXI_STRB_WIDTH{1'b1}} >> (AXI_STRB_WIDTH - last_cycle_offset_reg); // 和上面的区别是什么？
+                                // 当descriptor算出来的安全边界和本地算出来的不同，以本地的为准
                                 if (first_cycle_reg) begin
                                     length_next = length_reg + (last_cycle_offset_reg - offset_reg);
                                 end else begin
-                                    length_next = length_reg + last_cycle_offset_reg;
+                                    length_next = length_reg + last_cycle_offset_reg; // DMA内部的计数值？
                                 end
                             end
-                        end else begin
+                        end else begin // 要么意味着最后这一个beat是满载的（transaction还没有结束，但是这是当前这个transaction的最后一个beat） 要么就是说这里也对齐了 
                             if (AXIS_KEEP_ENABLE) begin
                                 m_axi_wstrb_int = strb_offset_mask_reg & shift_axis_tkeep;
                                 if (first_cycle_reg) begin
@@ -618,8 +631,8 @@ always @* begin
 
                         s_axis_write_data_tready_next = 1'b0;
                         s_axis_write_desc_ready_next = enable && active_count_av_reg;
-                        state_next = STATE_IDLE;
-                    end else begin
+                        state_next = STATE_IDLE; //刚好还是最后一个transaction，所以可以直接去到IDLE状态
+                    end else begin //说明output_last_cycle_reg == 0  这不是当前transaction的最后一个beat？
                         // more cycles left in burst, finish burst
                         if (AXIS_KEEP_ENABLE) begin
                             m_axi_wstrb_int = strb_offset_mask_reg & shift_axis_tkeep;
@@ -630,7 +643,7 @@ always @* begin
                             end
                         end
 
-                        // enqueue status FIFO entry for write completion
+                        // enqueue status FIFO entry for write completion   // 记录当前这个transaction的完成情况
                         status_fifo_we = 1'b1;
                         status_fifo_wr_len = length_next;
                         status_fifo_wr_tag = tag_reg;
@@ -640,13 +653,13 @@ always @* begin
                         status_fifo_wr_last = 1'b1;
 
                         s_axis_write_data_tready_next = 1'b0;
-                        state_next = STATE_FINISH_BURST;
+                        state_next = STATE_FINISH_BURST; // 还不是最后一个transaction  所以还需要去补空包？ 要到下一个状态
                     end
 
-                end else if (output_last_cycle_reg) begin
+                end else if (output_last_cycle_reg) begin // 记录的是当前这个transaction的长度  意味着当前的transaction正常结束
                     m_axi_wlast_int = 1'b1;
 
-                    if (op_word_count_reg > 0) begin
+                    if (op_word_count_reg > 0) begin // 说明当前的transaction并不是最后一个transaction
                         // current AXI transfer complete, but there is more data to transfer
                         // enqueue status FIFO entry for write completion
                         status_fifo_we = 1'b1;
@@ -655,7 +668,7 @@ always @* begin
                         status_fifo_wr_id = axis_id_next;
                         status_fifo_wr_dest = axis_dest_next;
                         status_fifo_wr_user = axis_user_next;
-                        status_fifo_wr_last = 1'b0;
+                        status_fifo_wr_last = 1'b0;  //未完结就不要吧总任务的wr last拉高
 
                         s_axis_write_data_tready_next = 1'b0;
                         state_next = STATE_START;
@@ -677,7 +690,7 @@ always @* begin
                         status_fifo_wr_id = axis_id_next;
                         status_fifo_wr_dest = axis_dest_next;
                         status_fifo_wr_user = axis_user_next;
-                        status_fifo_wr_last = 1'b1;
+                        status_fifo_wr_last = 1'b1; //拉高说明这个descriptor已完成
 
                         if (AXIS_LAST_ENABLE) begin
                             // not at the end of packet; drop remainder
@@ -690,7 +703,7 @@ always @* begin
                             state_next = STATE_IDLE;
                         end
                     end
-                end else begin
+                end else begin // 正常的中间beat传输  还不是最后一个transaction  也不是transaction的最后一拍
                     s_axis_write_data_tready_next = m_axi_wready_int && (last_transfer_reg || input_active_next) && shift_axis_input_tready;
                     state_next = STATE_WRITE;
                 end
@@ -698,7 +711,7 @@ always @* begin
                 state_next = STATE_WRITE;
             end
         end
-        STATE_FINISH_BURST: begin
+        STATE_FINISH_BURST: begin //一旦AW 握手成功  W通道必须给足够的数据
             // finish current AXI burst
 
             if (m_axi_wready_int) begin
@@ -730,18 +743,18 @@ always @* begin
                 state_next = STATE_FINISH_BURST;
             end
         end
-        STATE_DROP_DATA: begin
+        STATE_DROP_DATA: begin //处理overrun 即上游设备超发的数据（可能会在一开始设定好的size之上超发一些数据） （不能直接拒绝接收，因为可能会让上游IP的fifo堵死，导致数据丢失？）
             // drop excess AXI stream data
             s_axis_write_data_tready_next = shift_axis_input_tready;
 
             if (shift_axis_tvalid) begin
                 if (s_axis_write_data_tready && s_axis_write_data_tvalid) begin
-                    transfer_in_save = 1'b1;
+                    transfer_in_save = 1'b1; //数据只在shift reg中流转，不会通过AXI到达下游   只要m_axi_wvalid_int没有被拉高  数据就不会往后走
                 end
 
-                if (shift_axis_tlast) begin
+                if (shift_axis_tlast) begin //上游的overrun结束了
                     s_axis_write_data_tready_next = 1'b0;
-                    s_axis_write_desc_ready_next = enable && active_count_av_reg;
+                    s_axis_write_desc_ready_next = enable && active_count_av_reg; // 允许接收来自cpu的新descriptor
                     state_next = STATE_IDLE;
                 end else begin
                     state_next = STATE_DROP_DATA;
@@ -752,7 +765,7 @@ always @* begin
         end
     endcase
 
-    if (status_fifo_rd_ptr_reg != status_fifo_wr_ptr_reg) begin
+    if (status_fifo_rd_ptr_reg != status_fifo_wr_ptr_reg) begin //把status中的状态反馈给CPU？
         // status FIFO not empty
         if (m_axi_bready && m_axi_bvalid) begin
             // got write completion, pop and return status
@@ -768,7 +781,7 @@ always @* begin
             end else begin
                 m_axis_write_desc_status_error_next = DMA_ERROR_NONE;
             end
-            m_axis_write_desc_status_valid_next = status_fifo_last[status_fifo_rd_ptr_reg[STATUS_FIFO_ADDR_WIDTH-1:0]];
+            m_axis_write_desc_status_valid_next = status_fifo_last[status_fifo_rd_ptr_reg[STATUS_FIFO_ADDR_WIDTH-1:0]]; // 释放descriptor资源  可以去处理下一个descriptor了？
             status_fifo_rd_ptr_next = status_fifo_rd_ptr_reg + 1;
             m_axi_bready_next = 1'b0;
 
@@ -835,11 +848,11 @@ always @(posedge clk) begin
         save_axis_tdata_reg <= s_axis_write_data_tdata;
         save_axis_tkeep_reg <= AXIS_KEEP_ENABLE ? s_axis_write_data_tkeep : {AXIS_KEEP_WIDTH_INT{1'b1}};
         save_axis_tlast_reg <= s_axis_write_data_tlast;
-        shift_axis_extra_cycle_reg <= s_axis_write_data_tlast & ((s_axis_write_data_tkeep >> (AXIS_KEEP_WIDTH_INT-offset_reg)) != 0);
+        shift_axis_extra_cycle_reg <= s_axis_write_data_tlast & ((s_axis_write_data_tkeep >> (AXIS_KEEP_WIDTH_INT-offset_reg)) != 0); // 为了解决非对齐时间差  最后需要额外一拍来处理shift reg中的残留数据
     end
 
     if (status_fifo_we) begin
-        status_fifo_len[status_fifo_wr_ptr_reg[STATUS_FIFO_ADDR_WIDTH-1:0]] <= status_fifo_wr_len;
+        status_fifo_len[status_fifo_wr_ptr_reg[STATUS_FIFO_ADDR_WIDTH-1:0]] <= status_fifo_wr_len; //吧当前transaction的数据压入RAM
         status_fifo_tag[status_fifo_wr_ptr_reg[STATUS_FIFO_ADDR_WIDTH-1:0]] <= status_fifo_wr_tag;
         status_fifo_id[status_fifo_wr_ptr_reg[STATUS_FIFO_ADDR_WIDTH-1:0]] <= status_fifo_wr_id;
         status_fifo_dest[status_fifo_wr_ptr_reg[STATUS_FIFO_ADDR_WIDTH-1:0]] <= status_fifo_wr_dest;
@@ -849,7 +862,7 @@ always @(posedge clk) begin
     end
     status_fifo_rd_ptr_reg <= status_fifo_rd_ptr_next;
 
-    if (active_count_reg < 2**STATUS_FIFO_ADDR_WIDTH && inc_active && !dec_active) begin
+    if (active_count_reg < 2**STATUS_FIFO_ADDR_WIDTH && inc_active && !dec_active) begin  //记录的是transaction！  可以有多个在途descriptor  也可以有多个在途transaction
         active_count_reg <= active_count_reg + 1;
         active_count_av_reg <= active_count_reg < (2**STATUS_FIFO_ADDR_WIDTH-1);
     end else if (active_count_reg > 0 && !inc_active && dec_active) begin
@@ -893,7 +906,7 @@ reg [OUTPUT_FIFO_ADDR_WIDTH+1-1:0] out_fifo_wr_ptr_reg = 0;
 reg [OUTPUT_FIFO_ADDR_WIDTH+1-1:0] out_fifo_rd_ptr_reg = 0;
 reg out_fifo_half_full_reg = 1'b0;
 
-wire out_fifo_full = out_fifo_wr_ptr_reg == (out_fifo_rd_ptr_reg ^ {1'b1, {OUTPUT_FIFO_ADDR_WIDTH{1'b0}}});
+wire out_fifo_full = out_fifo_wr_ptr_reg == (out_fifo_rd_ptr_reg ^ {1'b1, {OUTPUT_FIFO_ADDR_WIDTH{1'b0}}}); //异步fifo？
 wire out_fifo_empty = out_fifo_wr_ptr_reg == out_fifo_rd_ptr_reg;
 
 (* ram_style = "distributed", ramstyle = "no_rw_check, mlab" *)
@@ -903,9 +916,9 @@ reg [AXI_STRB_WIDTH-1:0] out_fifo_wstrb[2**OUTPUT_FIFO_ADDR_WIDTH-1:0];
 (* ram_style = "distributed", ramstyle = "no_rw_check, mlab" *)
 reg                      out_fifo_wlast[2**OUTPUT_FIFO_ADDR_WIDTH-1:0];
 
-assign m_axi_wready_int = !out_fifo_half_full_reg;
+assign m_axi_wready_int = !out_fifo_half_full_reg; // 不用full 反压  因为有可能有在途的  用half full 反压比较安全
 
-assign m_axi_wdata  = m_axi_wdata_reg;
+assign m_axi_wdata  = m_axi_wdata_reg; //这是DMA对下游暴露出来的真正接口
 assign m_axi_wstrb  = m_axi_wstrb_reg;
 assign m_axi_wvalid = m_axi_wvalid_reg;
 assign m_axi_wlast  = m_axi_wlast_reg;
@@ -915,15 +928,15 @@ always @(posedge clk) begin
 
     out_fifo_half_full_reg <= $unsigned(out_fifo_wr_ptr_reg - out_fifo_rd_ptr_reg) >= 2**(OUTPUT_FIFO_ADDR_WIDTH-1);
 
-    if (!out_fifo_full && m_axi_wvalid_int) begin
-        out_fifo_wdata[out_fifo_wr_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]] <= m_axi_wdata_int;
+    if (!out_fifo_full && m_axi_wvalid_int) begin // DMA往AXI的输出有效
+        out_fifo_wdata[out_fifo_wr_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]] <= m_axi_wdata_int; // 数据存入fifo
         out_fifo_wstrb[out_fifo_wr_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]] <= m_axi_wstrb_int;
         out_fifo_wlast[out_fifo_wr_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]] <= m_axi_wlast_int;
         out_fifo_wr_ptr_reg <= out_fifo_wr_ptr_reg + 1;
     end
 
     if (!out_fifo_empty && (!m_axi_wvalid_reg || m_axi_wready)) begin
-        m_axi_wdata_reg <= out_fifo_wdata[out_fifo_rd_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]];
+        m_axi_wdata_reg <= out_fifo_wdata[out_fifo_rd_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]]; // 左边是暴露给下游的接口  这样数据就从fifo中去到下游
         m_axi_wstrb_reg <= out_fifo_wstrb[out_fifo_rd_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]];
         m_axi_wlast_reg <= out_fifo_wlast[out_fifo_rd_ptr_reg[OUTPUT_FIFO_ADDR_WIDTH-1:0]];
         m_axi_wvalid_reg <= 1'b1;

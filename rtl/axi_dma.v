@@ -84,7 +84,7 @@ module axi_dma #
     input  wire [LEN_WIDTH-1:0]       s_axis_read_desc_len,
     input  wire [TAG_WIDTH-1:0]       s_axis_read_desc_tag,
     input  wire [AXIS_ID_WIDTH-1:0]   s_axis_read_desc_id,
-    input  wire [AXIS_DEST_WIDTH-1:0] s_axis_read_desc_dest,
+    input  wire [AXIS_DEST_WIDTH-1:0] s_axis_read_desc_dest,//只是表示router中的序号，并不表示具体的物理地址
     input  wire [AXIS_USER_WIDTH-1:0] s_axis_read_desc_user,
     input  wire                       s_axis_read_desc_valid,
     output wire                       s_axis_read_desc_ready,

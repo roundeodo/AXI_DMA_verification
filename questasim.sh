@@ -1,1 +1,1 @@
-/esat/micas-data/data/design/scripts/questasim_2022.4.rc
+. /esat/micas-data/data/design/scripts/questasim_2022.4.rc
