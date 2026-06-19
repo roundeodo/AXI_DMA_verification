@@ -1,8 +1,9 @@
 # vsim -c "+nowarnTSCALE" -voptargs="+acc" -classdebug -L ./work -l load.log top_tb 
-# Start time: 22:15:58 on Jun 12,2026
-# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_355435/linux_x86_64_gcc-7.4.0/export_tramp.so
+# Start time: 16:29:44 on Jun 19,2026
+# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_2833433/linux_x86_64_gcc-7.4.0/export_tramp.so
 # ** Note: (vsim-3812) Design is being optimized...
 # ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vopt-143) Recognized 1 FSM in module "axi_ram(fast)".
 # ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
 # //  Questa Sim-64
 # //  Version 2022.4 linux_x86_64 Oct 18 2022
@@ -28,8 +29,9 @@
 # Loading work.top_tb(fast)
 # Loading work.axi_dma_if(fast__2)
 # Loading work.axi_dma_rd(fast)
-# Compiling /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_355435/linux_x86_64_gcc-7.4.0/exportwrapper.c
-# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_355435/linux_x86_64_gcc-7.4.0/vsim_auto_compile.so
+# Loading work.axi_ram(fast)
+# Compiling /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_2833433/linux_x86_64_gcc-7.4.0/exportwrapper.c
+# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_2833433/linux_x86_64_gcc-7.4.0/vsim_auto_compile.so
 # hexadecimal
 # UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_root.svh(392) @ 0: reporter [UVM/RELNOTES] 
 # ----------------------------------------------------------------
@@ -54,21 +56,29 @@
 #       (Specify +UVM_NO_RELNOTES to turn off this notice)
 # 
 # UVM_INFO @ 0: reporter [RNTST] Running test base_test...
-# UVM_INFO ./tests/base_test.sv(15) @ 0: uvm_test_top [BASE_TEST] build_phase entered
-# UVM_INFO ./tests/base_test.sv(21) @ 0: uvm_test_top [BASE_TEST] Got virtual axi_dma_if from uvm_config_db
+# UVM_INFO ./tests/base_test.sv(66) @ 0: uvm_test_top [BASE_TEST] build_phase entered
+# UVM_INFO ./tests/base_test.sv(85) @ 0: uvm_test_top [BASE_TEST] Got virtual axi_dma_if from uvm_config_db
+# UVM_INFO ./vip/axi_dma_uvc/env/axi_dma_env.sv(90) @ 0: uvm_test_top.env [AXI_DMA_ENV] build_phase_entered
+# UVM_INFO ./vip/axi_dma_uvc/agent/rd_desc_agent.sv(93) @ 0: uvm_test_top.env.rd_agent [RD_DESC_AGENT] build_phase entered
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(95) @ 0: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Got rd_desc_vif
+# UVM_INFO ./vip/axi_dma_uvc/sequencer/rd_desc_sequencer.sv(66) @ 0: uvm_test_top.env.rd_agent.sequencer [RD_DESC_SEQUENCER] build_phase entered
 # UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_traversal.svh(279) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
-# UVM_INFO ./tests/base_test.sv(26) @ 0: uvm_test_top [BASE_TEST] run_phase entered
+# UVM_INFO ./tests/base_test.sv(108) @ 0: uvm_test_top [BASE_TEST] run_phase entered
 # UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_objection.svh(1270) @ 100000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
 # UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_report_server.svh(847) @ 100000: reporter [UVM/REPORT/SERVER] 
 # --- UVM Report Summary ---
 # 
 # ** Report counts by severity
-# UVM_INFO :    7
+# UVM_INFO :   11
 # UVM_WARNING :    0
 # UVM_ERROR :    0
 # UVM_FATAL :    0
 # ** Report counts by id
+# [AXI_DMA_ENV]     1
 # [BASE_TEST]     3
+# [RD_DESC_AGENT]     1
+# [RD_DESC_DRIVER]     1
+# [RD_DESC_SEQUENCER]     1
 # [RNTST]     1
 # [TEST_DONE]     1
 # [UVM/COMP/NAMECHECK]     1
@@ -76,5 +86,5 @@
 # 
 # ** Note: $finish    : /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_root.svh(517)
 #    Time: 100 ns  Iteration: 68  Instance: /top_tb
-# End time: 22:16:03 on Jun 12,2026, Elapsed time: 0:00:05
+# End time: 16:29:48 on Jun 19,2026, Elapsed time: 0:00:04
 # Errors: 0, Warnings: 1

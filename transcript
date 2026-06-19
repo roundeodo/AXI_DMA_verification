@@ -4,13 +4,14 @@
 # vmap work work 
 # Modifying modelsim.ini
 # QuestaSim-64 vlog 2022.4 Compiler 2022.10 Oct 18 2022
-# Start time: 22:15:57 on Jun 12,2026
+# Start time: 16:29:43 on Jun 19,2026
 # vlog -sv12compat -mfcu "+define+UVM_NO_DPI" "+incdir+/esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src" /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/uvm_pkg.sv -f flist.f 
 # -- Compiling package uvm_pkg (uvm-1.2 Built-in)
 # -- Compiling interface axi_dma_if
 # -- Compiling module axi_dma_rd
 # -- Compiling module axi_dma_wr
 # -- Compiling module axi_dma
+# -- Compiling module axi_ram
 # -- Compiling package uvm_pkg_sv_unit
 # -- Importing package uvm_pkg (uvm-1.2 Built-in)
 # -- Compiling module top_tb
@@ -18,5 +19,5 @@
 # Top level modules:
 # 	axi_dma
 # 	top_tb
-# End time: 22:15:58 on Jun 12,2026, Elapsed time: 0:00:01
+# End time: 16:29:44 on Jun 19,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0

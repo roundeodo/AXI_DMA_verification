@@ -72,6 +72,63 @@ module top_tb;
         .enable(dma_if.read_enable)
     );
 
+    // AXI RAM model from the same verilog-axi library as the DMA RTL.
+    //
+    // In the read-DMA milestone, axi_dma_rd is the AXI master and axi_ram is
+    // the AXI slave memory.  The DMA issues AR requests through dma_if.m_axi_*,
+    // and axi_ram returns R data beats.  The write channels are tied off for
+    // now because axi_dma_rd does not use them.
+    axi_ram #(
+        .DATA_WIDTH(32),
+        .ADDR_WIDTH(16),
+        .STRB_WIDTH(4),
+        .ID_WIDTH(8),
+        .PIPELINE_OUTPUT(0)
+    ) axi_ram_inst (
+        .clk(clk),
+        .rst(rst),
+
+        .s_axi_awid('0),
+        .s_axi_awaddr('0),
+        .s_axi_awlen('0),
+        .s_axi_awsize('0),
+        .s_axi_awburst(2'b01),
+        .s_axi_awlock(1'b0),
+        .s_axi_awcache('0),
+        .s_axi_awprot('0),
+        .s_axi_awvalid(1'b0),
+        .s_axi_awready(),
+
+        .s_axi_wdata('0),
+        .s_axi_wstrb('0),
+        .s_axi_wlast(1'b0),
+        .s_axi_wvalid(1'b0),
+        .s_axi_wready(),
+
+        .s_axi_bid(),
+        .s_axi_bresp(),
+        .s_axi_bvalid(),
+        .s_axi_bready(1'b1),
+
+        .s_axi_arid(dma_if.m_axi_arid),
+        .s_axi_araddr(dma_if.m_axi_araddr),
+        .s_axi_arlen(dma_if.m_axi_arlen),
+        .s_axi_arsize(dma_if.m_axi_arsize),
+        .s_axi_arburst(dma_if.m_axi_arburst),
+        .s_axi_arlock(dma_if.m_axi_arlock),
+        .s_axi_arcache(dma_if.m_axi_arcache),
+        .s_axi_arprot(dma_if.m_axi_arprot),
+        .s_axi_arvalid(dma_if.m_axi_arvalid),
+        .s_axi_arready(dma_if.m_axi_arready),
+
+        .s_axi_rid(dma_if.m_axi_rid),
+        .s_axi_rdata(dma_if.m_axi_rdata),
+        .s_axi_rresp(dma_if.m_axi_rresp),
+        .s_axi_rlast(dma_if.m_axi_rlast),
+        .s_axi_rvalid(dma_if.m_axi_rvalid),
+        .s_axi_rready(dma_if.m_axi_rready)
+    );
+
     initial begin
         dma_if.s_axis_read_desc_addr  = '0;
         dma_if.s_axis_read_desc_len   = '0;
@@ -83,16 +140,20 @@ module top_tb;
 
         dma_if.m_axis_read_data_tready = 1'b1;
 
-        dma_if.m_axi_arready = 1'b0;
-        dma_if.m_axi_rid     = '0;
-        dma_if.m_axi_rdata   = '0;
-        dma_if.m_axi_rresp   = 2'b00;
-        dma_if.m_axi_rlast   = 1'b0;
-        dma_if.m_axi_rvalid  = 1'b0;
-
         dma_if.read_enable = 1'b0;
 
         uvm_config_db#(virtual axi_dma_if)::set(null, "uvm_test_top", "vif", dma_if);
+
+        // Pass the read-descriptor driver view separately from the full
+        // interface handle above.  The driver gets "rd_desc_vif" as a
+        // modport-typed virtual interface, so it can only access the
+        // descriptor signals it owns.
+        uvm_config_db#(virtual axi_dma_if.rd_desc_drv_mp)::set(
+            null,
+            "uvm_test_top.*",
+            "rd_desc_vif",
+            dma_if.rd_desc_drv_mp
+            );
         run_test("base_test");
     end
 

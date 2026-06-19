@@ -30,7 +30,7 @@ interface axi_dma_if #(
   logic [3:0] m_axis_read_desc_status_error;
   logic m_axis_read_desc_status_valid;
 
-  // axi stream read data ouput 
+  // axi stream read data output 
   logic [AXIS_DATA_WIDTH-1:0] m_axis_read_data_tdata;
   logic [AXIS_KEEP_WIDTH-1:0] m_axis_read_data_tkeep;
   logic m_axis_read_data_tvalid;
@@ -214,140 +214,179 @@ interface axi_dma_if #(
       input write_abort
   );
 
+  // Clocking block: read descriptor driver timing view
+  //
+  // The read descriptor driver is a testbench component.  It should drive and
+  // sample this synchronous interface at well-defined clocking points, instead
+  // of changing signals at arbitrary simulation times.  This clocking block is
+  // the timing view used by rd_desc_driver:
+  //
+  //   @(rd_desc_drv_cb);
+  //   rd_desc_drv_cb.s_axis_read_desc_valid <= 1'b1;
+  //
+  // This is cleaner than scattering:
+  //
+  //   @(posedge clk);
+  //   s_axis_read_desc_valid <= 1'b1;
+  //
+  // throughout the driver.
+  //
+  // What input/output means in a clocking block:
+  // - output: signals driven by the testbench driver.
+  // - input : signals sampled by the testbench driver.
+  //
+  // For rd_desc_drv_cb:
+  // - output payload/valid/read_enable because the driver drives them.
+  // - input ready/rst because the driver only observes them.
+  //
+  // - input #1step samples stable values just before the clocking event.
+  // - output #1ns drives after the clock edge, reducing TB/DUT race risk.
+  clocking rd_desc_drv_cb @(posedge clk);
+    default input #1step output #1ns;
+    
+    output s_axis_read_desc_addr;
+    output s_axis_read_desc_len;
+    output s_axis_read_desc_tag;
+    output s_axis_read_desc_id;
+    output s_axis_read_desc_dest;
+    output s_axis_read_desc_user;
+    output s_axis_read_desc_valid;
+
+    output read_enable;
+    input s_axis_read_desc_ready;
+    input rst;
+  endclocking
+
+  // The driver should access descriptor signals through:
+  //
+  //   rd_desc_vif.rd_desc_drv_cb.s_axis_read_desc_addr
+  //
+  // instead of directly:
+  //
+  //   rd_desc_vif.s_axis_read_desc_addr
   // read descriptor driver modport
   modport rd_desc_drv_mp(
+      clocking rd_desc_drv_cb,
       input clk,
-      input rst,
-
-      output s_axis_read_desc_addr,
-      output s_axis_read_desc_len,
-      output s_axis_read_desc_tag,
-      output s_axis_read_desc_id,
-      output s_axis_read_desc_dest,
-      output s_axis_read_desc_user,
-      output s_axis_read_desc_valid,
-      input s_axis_read_desc_ready,
-
-      output read_enable
+      input rst
   );
 
+  // cb  
+  clocking wr_desc_drv_cb @(posedge clk);
+    default input #1step output #1ns;
+    input rst;
+
+    output s_axis_write_desc_addr;
+    output s_axis_write_desc_len;
+    output s_axis_write_desc_tag;
+    output s_axis_write_desc_valid;
+    input s_axis_write_desc_ready;
+
+    output write_enable;
+    output write_abort;
+  endclocking
   // write descriptor driver modport
   modport wr_desc_drv_mp(
-      input clk,
-      input rst,
-
-      output s_axis_write_desc_addr,
-      output s_axis_write_desc_len,
-      output s_axis_write_desc_tag,
-      output s_axis_write_desc_valid,
-      input s_axis_write_desc_ready,
-
-      output write_enable,
-      output write_abort
+    clocking wr_desc_drv_cb,
+    input clk,
+    input rst
   );
+
+
+  // cb
+  clocking axis_wr_data_drv_cb @(posedge clk);
+    default input #1step output #1ns;
+    input rst;
+
+    output s_axis_write_data_tdata;
+    output s_axis_write_data_tkeep;
+    output s_axis_write_data_tvalid;
+    input s_axis_write_data_tready;
+    output s_axis_write_data_tlast;
+    output s_axis_write_data_tid;
+    output s_axis_write_data_tdest;
+    output s_axis_write_data_tuser;
+  endclocking
 
   // axis write data driver modport
   modport axis_wr_data_drv_mp(
-      input clk,
-      input rst,
-
-      output s_axis_write_data_tdata,
-      output s_axis_write_data_tkeep,
-      output s_axis_write_data_tvalid,
-      input s_axis_write_data_tready,
-      output s_axis_write_data_tlast,
-      output s_axis_write_data_tid,
-      output s_axis_write_data_tdest,
-      output s_axis_write_data_tuser
+    clocking axis_wr_data_drv_cb,
+    input clk,
+    input rst
   );
+
+  // cb
+  clocking axis_rd_data_mon_cb @(posedge clk);
+    default input #1step output #1ns;
+    input rst;
+
+    input m_axis_read_data_tdata;
+    input m_axis_read_data_tkeep;
+    input m_axis_read_data_tvalid;
+    input m_axis_read_data_tready;
+    input m_axis_read_data_tlast;
+    input m_axis_read_data_tid;
+    input m_axis_read_data_tdest;
+    input m_axis_read_data_tuser;
+  endclocking 
 
   // axis read data monitor modport
   modport axis_rd_data_mon_mp(
-      input clk,
-      input rst,
-
-      input m_axis_read_data_tdata,
-      input m_axis_read_data_tkeep,
-      input m_axis_read_data_tvalid,
-      input m_axis_read_data_tready,
-      input m_axis_read_data_tlast,
-      input m_axis_read_data_tid,
-      input m_axis_read_data_tdest,
-      input m_axis_read_data_tuser
+    clocking axis_rd_data_mon_cb,
+    input clk,
+    input rst
   );
+
+  // cb
+  clocking rd_status_mon_cb @(posedge clk);
+    default input #1step output #1ns;
+    input rst;
+
+    input m_axis_read_desc_status_tag;
+    input m_axis_read_desc_status_error;
+    input m_axis_read_desc_status_valid;
+  endclocking
 
   // read status monitor modport
   modport rd_status_mon_mp(
-      input clk,
-      input rst,
-
-      input m_axis_read_desc_status_tag,
-      input m_axis_read_desc_status_error,
-      input m_axis_read_desc_status_valid
+    clocking rd_status_mon_cb,
+    input clk,
+    input rst
   );
+
+  // cb
+  clocking wr_status_mon_cb @(posedge clk);
+    default input #1step output #1ns;
+    input rst;
+
+    input m_axis_write_desc_status_len;
+    input m_axis_write_desc_status_tag;
+    input m_axis_write_desc_status_id;
+    input m_axis_write_desc_status_dest;
+    input m_axis_write_desc_status_user;
+    input m_axis_write_desc_status_error;
+    input m_axis_write_desc_status_valid;
+  endclocking
 
   // write status monitor modport
   modport wr_status_mon_mp(
-      input clk,
-      input rst,
-
-      input m_axis_write_desc_status_len,
-      input m_axis_write_desc_status_tag,
-      input m_axis_write_desc_status_id,
-      input m_axis_write_desc_status_dest,
-      input m_axis_write_desc_status_user,
-      input m_axis_write_desc_status_error,
-      input m_axis_write_desc_status_valid
+    clocking wr_status_mon_cb,
+    input clk,
+    input rst
   );
 
-  // axi memory responder modport
-  // for memory model
-  modport axi_mem_rsp_mp(
-      input clk,
-      input rst,
 
-      input m_axi_awid,
-      input m_axi_awaddr,
-      input m_axi_awlen,
-      input m_axi_awsize,
-      input m_axi_awburst,
-      input m_axi_awlock,
-      input m_axi_awcache,
-      input m_axi_awprot,
-      input m_axi_awvalid,
-      output m_axi_awready,
-
-      input m_axi_wdata,
-      input m_axi_wstrb,
-      input m_axi_wlast,
-      input m_axi_wvalid,
-      output m_axi_wready,
-
-      output m_axi_bid,
-      output m_axi_bresp,
-      output m_axi_bvalid,
-      input m_axi_bready,
-
-      input m_axi_arid,
-      input m_axi_araddr,
-      input m_axi_arlen,
-      input m_axi_arsize,
-      input m_axi_arburst,
-      input m_axi_arlock,
-      input m_axi_arcache,
-      input m_axi_arprot,
-      input m_axi_arvalid,
-      output m_axi_arready,
-
-      output m_axi_rid,
-      output m_axi_rdata,
-      output m_axi_rresp,
-      output m_axi_rlast,
-      output m_axi_rvalid,
-      input m_axi_rready
-
-  );
+  // AXI memory note:
+  //
+  // We originally planned a UVM AXI memory responder that would drive
+  // m_axi_arready and m_axi_r* through a clocking block.  The current testbench
+  // instead instantiates the library RTL axi_ram directly in top_tb.  Because
+  // clocking block outputs are also drivers, keeping an unused responder
+  // clocking block here would create multiple drivers on the same signals.
+  //
+  // If we later replace axi_ram with a UVM AXI slave responder, add a dedicated
+  // responder modport back and remove the RTL axi_ram connection at the same
+  // time.  Only one component may drive the AXI slave response signals.
 
 
 endinterface  //axi_dma_if
-
