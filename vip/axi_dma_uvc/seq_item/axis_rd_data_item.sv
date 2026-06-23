@@ -42,7 +42,8 @@
 //
 //   import uvm_pkg::*;
 //   `include "uvm_macros.svh"
-
+import uvm_pkg::*;
+`include "uvm_macros.svh"
 
 // TODO 2: create a parameterized class.
 //
@@ -59,7 +60,52 @@
 // Why parameterized:
 // These widths mirror axi_dma_if/DUT parameters.  Keeping the item
 // parameterized makes the UVC less fragile when widths change.
+class axis_rd_data_item #(
+    parameter int AXIS_DATA_WIDTH = 32,
+    parameter int AXIS_KEEP_WIDTH = AXIS_DATA_WIDTH/8,
+    parameter int AXIS_ID_WIDTH = 8,
+    parameter int AXIS_DEST_WIDTH = 8,
+    parameter int AXIS_USER_WIDTH = 1
+)extends uvm_sequence_item;
 
+    bit [AXIS_DATA_WIDTH-1:0] data;
+    bit [AXIS_KEEP_WIDTH-1:0] keep;
+    bit last;
+    bit [AXIS_ID_WIDTH-1:0] id;
+    bit [AXIS_DEST_WIDTH-1:0] dest;
+    bit [AXIS_USER_WIDTH-1:0] user;
+    
+
+    int unsigned beat_index;
+    time sample_time;
+
+    `uvm_object_param_utils_begin(axis_rd_data_item)
+        `uvm_field_int(data, UVM_ALL_ON)
+        `uvm_field_int(keep, UVM_ALL_ON)
+        `uvm_field_int(last, UVM_ALL_ON)
+        `uvm_field_int(id, UVM_ALL_ON)
+        `uvm_field_int(dest, UVM_ALL_ON)
+        `uvm_field_int(user, UVM_ALL_ON)
+    `uvm_object_utils_end
+
+    function new(string name = "axis_rd_data_item");
+        super.new(name);
+    endfunction //new()
+
+    function int unsigned valid_byte_count();
+        int unsigned count;
+        
+        count = 0;
+
+        for(int i = 0; i < AXIS_KEEP_WIDTH; i++) begin
+            if(keep[i]) begin
+                count ++;
+            end
+        end
+
+        return count;
+    endfunction
+endclass //axis_rd_data_item extends uvm_sequence_item
 
 // TODO 3: add observed data fields inside the class.
 //

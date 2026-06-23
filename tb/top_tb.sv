@@ -129,6 +129,43 @@ module top_tb;
         .s_axi_rready(dma_if.m_axi_rready)
     );
 
+    // The RTL axi_ram stores 32-bit words, but DMA descriptors use byte
+    // addresses.  We need a deterministic byte pattern so the reference model
+    // can predict exactly what the DMA should output.
+    function automatic [7:0] smoke_mem_pattern(input int unsigned byte_addr);
+        smoke_mem_pattern = byte_addr[7:0] ^ 8'hA5;
+    endfunction
+
+    // Why this pattern:
+    // - non-zero, so bugs do not hide behind all-zero memory
+    // - easy to reproduce in ref_model
+    // - changes with address, so wrong address/byte order is visible
+
+    // axi_ram has:
+    //
+    //   reg [DATA_WIDTH-1:0] mem[(2**VALID_ADDR_WIDTH)-1:0];
+    //
+    // With DATA_WIDTH=32, each mem[word_index] contains 4 byte lanes:
+    //
+    //   mem[word_index][7:0]    -> byte address word_index*4 + 0
+    //   mem[word_index][15:8]   -> byte address word_index*4 + 1
+    //   mem[word_index][23:16]  -> byte address word_index*4 + 2
+    //   mem[word_index][31:24]  -> byte address word_index*4 + 3
+    //
+    // Important:
+    // This is a testbench preload using hierarchical access.  It is acceptable
+    // for this learning testbench, but it is not synthesizable RTL style.
+    initial begin
+        // Let axi_ram's own time-0 memory clear finish first, then overwrite it
+        // with the smoke-test pattern before reset is released.
+        #1ns;
+        for(int word = 0; word < 2**axi_ram_inst.VALID_ADDR_WIDTH; word++)begin
+            for(int lane = 0; lane < 4; lane++)begin
+                axi_ram_inst.mem[word][8*lane +: 8] = smoke_mem_pattern(word*4 + lane);
+            end
+        end
+    end
+
     initial begin
         dma_if.s_axis_read_desc_addr  = '0;
         dma_if.s_axis_read_desc_len   = '0;
@@ -154,7 +191,63 @@ module top_tb;
             "rd_desc_vif",
             dma_if.rd_desc_drv_mp
             );
-        run_test("base_test");
+
+        // TODO MON-1: pass monitor modport views into UVM.
+        //
+        // After axis_rd_data_monitor and rd_status_monitor are added to env,
+        // set their virtual interface handles here.
+        //
+        // Add:
+        //
+        // uvm_config_db#(virtual axi_dma_if.axis_rd_data_mon_mp)::set(
+        //     null,
+        //     "uvm_test_top.*",
+        //     "axis_rd_data_vif",
+        //     dma_if.axis_rd_data_mon_mp
+        // );
+        //
+        // uvm_config_db#(virtual axi_dma_if.rd_status_mon_mp)::set(
+        //     null,
+        //     "uvm_test_top.*",
+        //     "rd_status_vif",
+        //     dma_if.rd_status_mon_mp
+        // );
+        //
+        // Why top_tb does this:
+        // top_tb owns the real static interface instance.  UVM classes only get
+        // virtual handles to selected modport views through uvm_config_db.
+        uvm_config_db#(virtual axi_dma_if.axis_rd_data_mon_mp)::set(
+            null,
+            "uvm_test_top.*",
+            "axis_rd_data_vif",
+            dma_if.axis_rd_data_mon_mp
+        );
+
+        uvm_config_db#(virtual axi_dma_if.rd_status_mon_mp)::set(
+            null,
+            "uvm_test_top.*",
+            "rd_status_vif",
+            dma_if.rd_status_mon_mp
+        );
+        
+        // TODO TEST-1: when rd_smoke_test is ready, switch this to run_test().
+        //
+        // Current form always runs base_test:
+        //
+        //   run_test("base_test");
+        //
+        // Better long-term form:
+        //
+        //   run_test();
+        //
+        // Then select tests from the simulator command line:
+        //
+        //   +UVM_TESTNAME=base_test
+        //   +UVM_TESTNAME=rd_smoke_test
+        //
+        // This avoids editing top_tb each time you want to run a different
+        // test scenario.
+        run_test();
     end
 
 endmodule

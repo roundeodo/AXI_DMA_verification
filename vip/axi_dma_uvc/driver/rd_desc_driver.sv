@@ -77,10 +77,16 @@ class rd_desc_driver extends uvm_driver#(dma_rd_desc_item#());
     // easier to configure and debug than a generic "vif".
     virtual axi_dma_if.rd_desc_drv_mp rd_desc_vif;
 
+    // Publish a descriptor snapshot after the descriptor valid/ready handshake
+    // completes.  The reference model will use this as its input, because only
+    // accepted descriptors should produce expected DMA output.
+    uvm_analysis_port #(dma_rd_desc_item#()) accepted_desc_ap;
+
 
     // Standard UVM component constructor.
     function new(string name = "rd_desc_driver", uvm_component parent = null);
         super.new(name,parent);
+        accepted_desc_ap = new("accepted_desc_ap", this);
     endfunction //new()
 
     // build_phase gets the modport view placed in uvm_config_db by top_tb.
@@ -94,6 +100,19 @@ class rd_desc_driver extends uvm_driver#(dma_rd_desc_item#());
 
         `uvm_info("RD_DESC_DRIVER","Got rd_desc_vif", UVM_LOW);
 
+    endfunction
+
+    function void publish_accepted_desc(dma_rd_desc_item#() item);
+        dma_rd_desc_item#() accepted;
+
+        accepted = dma_rd_desc_item#()::type_id::create("accepted");
+        accepted.copy(item);
+        accepted_desc_ap.write(accepted);
+
+        `uvm_info("RD_DESC_DRIVER",
+            $sformatf("Published accepted descriptor addr=0x%0h len=%0d tag=0x%0h",
+                      accepted.addr, accepted.len, accepted.tag),
+            UVM_LOW)
     endfunction
 
     // Drive a safe idle state on descriptor inputs.
@@ -172,6 +191,7 @@ class rd_desc_driver extends uvm_driver#(dma_rd_desc_item#());
             seq_item_port.get_next_item(req);
             `uvm_info("RD_DESC_DRIVER", "Driving read descriptor", UVM_LOW)
             drive_one_desc(req);
+            publish_accepted_desc(req);
             seq_item_port.item_done();
         end
     endtask 
@@ -179,10 +199,30 @@ class rd_desc_driver extends uvm_driver#(dma_rd_desc_item#());
 
     // TODO NEXT: publish accepted descriptors to the scoreboard.
     //
-    // Later, add an analysis port to this driver.  After drive_one_desc()
-    // completes the valid/ready handshake, send a copy of the accepted item to
-    // the scoreboard.  That lets the reference model know which descriptor the
-    // DUT actually received.
+    // Next, add an analysis port to this driver:
+    //
+    //   uvm_analysis_port #(dma_rd_desc_item#()) accepted_desc_ap;
+    //
+    // Create it in new():
+    //
+    //   accepted_desc_ap = new("accepted_desc_ap", this);
+    //
+    // After drive_one_desc() completes the valid/ready handshake, send a copy
+    // of the accepted item:
+    //
+    //   dma_rd_desc_item#() accepted;
+    //   accepted = dma_rd_desc_item#()::type_id::create("accepted");
+    //   accepted.copy(req);
+    //   accepted_desc_ap.write(accepted);
+    //
+    // Why after handshake:
+    // The reference model should predict only descriptors the DUT actually
+    // accepted, not descriptors that a sequence merely tried to send.
+    //
+    // Why copy:
+    // Analysis subscribers should receive a stable transaction snapshot.  If
+    // the original req handle is reused or modified later, the reference model
+    // should not see its historical descriptor change.
 
 endclass //rd_desc_driver extends uvm_driver#(dma_rd_desc_item#())
 

@@ -2,9 +2,57 @@
 
 ## 0. Goal
 
-This project is not only about making one simulation pass. The real goal is to
-walk through a complete IP verification flow for an AXI-based DMA, using a UVM
-testbench that is close to how a real project is structured.
+This project is not only about making one simulation pass or writing a UVM
+testbench that "looks right". The real goal is to learn a realistic IP
+verification workflow end to end, using an AXI-based DMA as the training target.
+
+The feature-level verification plan for the read DMA is kept in:
+
+```text
+docs/axi_dma_rd_verification_plan.md
+```
+
+Use that document to answer "what are we trying to verify and why?"  Use this
+document to answer "what implementation step should we do next?"
+
+By the end of this project, the verification environment should be able to show,
+with logs, checks, tests, and coverage metrics, what has been verified and what
+has not been verified yet.
+
+The target mindset is verification closure:
+
+- Start from a written verification plan.
+- Translate design behavior into concrete verification goals.
+- Build reusable UVM components that can drive, observe, predict, and check DUT
+  behavior.
+- Write directed tests first to prove the environment and important scenarios.
+- Add constrained-random tests only after the directed path is trustworthy.
+- Define functional coverage that maps back to the verification plan.
+- Run regressions and use pass/fail results, functional coverage, code coverage,
+  and open issues to judge verification completeness.
+- Keep a traceable connection between:
+  - RTL feature or risk
+  - test scenario
+  - checker/reference model behavior
+  - coverage point
+  - regression result
+
+The final learning outcome is not simply "the test passes". The final outcome is
+understanding how a verification engineer argues that an IP block has reached a
+planned verification quality level, and what evidence is used to support that
+claim.
+
+For this DMA project, that evidence should eventually include:
+
+- Passing directed and constrained-random regressions.
+- Scoreboard checks for read data, write data, descriptor status, tags, lengths,
+  sideband fields, and memory contents.
+- Functional coverage for descriptor length, address alignment, burst shape,
+  `tkeep` patterns, backpressure, tags, error/status cases, and read/write/top
+  integration scenarios.
+- Code coverage review to find unexercised RTL branches or states.
+- A short verification closure summary explaining what is covered, what remains
+  unverified, and why.
 
 The learning style is:
 
@@ -195,6 +243,32 @@ Add directed tests for:
 - Boundary-adjacent reads.
 - Different tags.
 - Backpressure on AXIS output.
+
+Current next directed expansion:
+
+- `rd_len_sweep_test`
+- Start `rd_len_sweep_sequence`
+- Keep descriptor stream generation inside the sequence, not inside the test
+- Sweep lengths: 1, 2, 3, 4, 5, 15, 16, 17
+- Check expected `data/keep/last/id/dest/user` and status `tag/error`
+- Expected status matches: 8
+- Expected data beat matches: 19
+
+Current status:
+
+- `rd_smoke_test` is complete.
+- `rd_len_sweep_test` is complete.
+- The scoreboard now masks invalid `tdata` byte lanes according to `tkeep`.
+
+Next learning step:
+
+- Add a minimal functional coverage collector for the read path.
+- Use the already passing smoke and length-sweep tests to see real coverage
+  numbers.
+- Then continue directed expansion from the feature verification plan:
+  - address offset / unaligned reads
+  - AXIS backpressure
+  - AXI burst and 4KB boundary behavior
 
 Purpose:
 

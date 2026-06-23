@@ -1,0 +1,256 @@
+Reading pref.tcl
+
+# 2022.4
+
+# set TESTNAME rd_len_sweep_test
+# rd_len_sweep_test
+#  do uvm_start.do
+# /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src
+# QuestaSim-64 vmap 2022.4 Lib Mapping Utility 2022.10 Oct 18 2022
+# vmap work work 
+# Modifying modelsim.ini
+# QuestaSim-64 vlog 2022.4 Compiler 2022.10 Oct 18 2022
+# Start time: 17:21:30 on Jun 21,2026
+# vlog -sv12compat -mfcu "+define+UVM_NO_DPI" "+incdir+/esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src" /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/uvm_pkg.sv -f flist.f 
+# -- Compiling package uvm_pkg (uvm-1.2 Built-in)
+# -- Compiling interface axi_dma_if
+# -- Compiling module axi_dma_rd
+# -- Compiling module axi_dma_wr
+# -- Compiling module axi_dma
+# -- Compiling module axi_ram
+# -- Compiling package uvm_pkg_sv_unit
+# -- Importing package uvm_pkg (uvm-1.2 Built-in)
+# -- Compiling module top_tb
+# 
+# Top level modules:
+# 	axi_dma
+# 	top_tb
+# End time: 17:21:31 on Jun 21,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# vsim -c "+nowarnTSCALE" "+UVM_TESTNAME=rd_len_sweep_test" -voptargs="+acc" -classdebug -L ./work -l load.log top_tb 
+# Start time: 17:21:31 on Jun 21,2026
+# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_2237083/linux_x86_64_gcc-7.4.0/export_tramp.so
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vopt-143) Recognized 1 FSM in module "axi_ram(fast)".
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# //  Questa Sim-64
+# //  Version 2022.4 linux_x86_64 Oct 18 2022
+# //
+# //  Copyright 1991-2022 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# ** Note: (vsim-8785) UVM-aware debugging capabilities will be disabled since no compiled "questa_uvm_pkg" can be found.
+# This also means that later if you turn on UVM-aware debugging your debug simulations may have
+# different random seeds from your non-debug simulations.
+# Loading sv_std.std
+# Loading work.axi_dma_if(fast)
+# Loading work.uvm_pkg(fast)
+# Loading work.uvm_pkg_sv_unit(fast)
+# Loading work.top_tb(fast)
+# Loading work.axi_dma_if(fast__2)
+# Loading work.axi_dma_rd(fast)
+# Loading work.axi_ram(fast)
+# Compiling /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_2237083/linux_x86_64_gcc-7.4.0/exportwrapper.c
+# Loading /tmp/r1015673@barnard3.esat.kuleuven.be_dpi_2237083/linux_x86_64_gcc-7.4.0/vsim_auto_compile.so
+# hexadecimal
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_root.svh(392) @ 0: reporter [UVM/RELNOTES] 
+# ----------------------------------------------------------------
+# UVM-1.2
+# (C) 2007-2014 Mentor Graphics Corporation
+# (C) 2007-2014 Cadence Design Systems, Inc.
+# (C) 2006-2014 Synopsys, Inc.
+# (C) 2011-2013 Cypress Semiconductor Corp.
+# (C) 2013-2014 NVIDIA Corporation
+# ----------------------------------------------------------------
+# 
+#   ***********       IMPORTANT RELEASE NOTES         ************
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_NO_DEPRECATED undefined.
+#   See http://www.eda.org/svdb/view.php?id=3313 for more details.
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_OBJECT_DO_NOT_NEED_CONSTRUCTOR undefined.
+#   See http://www.eda.org/svdb/view.php?id=3770 for more details.
+# 
+#       (Specify +UVM_NO_RELNOTES to turn off this notice)
+# 
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_root.svh(453) @ 0: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
+# UVM_INFO @ 0: reporter [RNTST] Running test rd_len_sweep_test...
+# UVM_INFO ./tests/base_test.sv(66) @ 0: uvm_test_top [BASE_TEST] build_phase entered
+# UVM_INFO ./tests/base_test.sv(85) @ 0: uvm_test_top [BASE_TEST] Got virtual axi_dma_if from uvm_config_db
+# UVM_INFO ./vip/axi_dma_uvc/env/axi_dma_env.sv(112) @ 0: uvm_test_top.env [AXI_DMA_ENV] build_phase_entered
+# UVM_INFO ./vip/axi_dma_uvc/monitor/axis_rd_data_monitor.sv(100) @ 0: uvm_test_top.env.axis_rd_mon [AXIS_RD_MON] Got axis_rd_data_vif
+# UVM_INFO ./vip/axi_dma_uvc/agent/rd_desc_agent.sv(93) @ 0: uvm_test_top.env.rd_agent [RD_DESC_AGENT] build_phase entered
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(101) @ 0: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Got rd_desc_vif
+# UVM_INFO ./vip/axi_dma_uvc/sequencer/rd_desc_sequencer.sv(66) @ 0: uvm_test_top.env.rd_agent.sequencer [RD_DESC_SEQUENCER] build_phase entered
+# UVM_INFO ./vip/axi_dma_uvc/monitor/rd_status_monitor.sv(107) @ 0: uvm_test_top.env.rd_status_mon [RD_STATUS_MON] Got rd_status_vif
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(119) @ 0: uvm_test_top.env.ref_model [AXI_DMA_REF] build_phase entered
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(138) @ 0: uvm_test_top.env.scoreboard [AXI_DMA_SB] build_phase entered
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_traversal.svh(279) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+# UVM_INFO ./tests/rd_len_sweep_test.sv(60) @ 0: uvm_test_top [RD_LEN_SWEEP_TEST] run_phase entered
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(93) @ 0: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] body started
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 25000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 45000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1000 len=1 tag=0x1
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 45000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[1]: tag=0x1 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 45000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x1 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 45000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa5 keep=0x1 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 45000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1000 len=1 tag=0x1
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 45000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1000 len=1 tag=0x1
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 45000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 75000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1100 len=2 tag=0x2
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 75000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[2]: tag=0x2 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 75000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x2 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 75000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa4a5 keep=0x3 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 75000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1100 len=2 tag=0x2
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 75000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1100 len=2 tag=0x2
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 75000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 95000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[1]: tag=0x1 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 95000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[1]: tag=0x1 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 105000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0x1 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_ERROR ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(226) @ 105000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA mismatch beat exp_idx=0 act_idx=0 exp_data=0xa5 act_data=0xa6a7a4a5 exp_keep=0x1 act_keep=0x1 exp_last=1 act_last=1
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 115000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1200 len=3 tag=0x3
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 115000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[3]: tag=0x3 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 115000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x3 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 115000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa7a4a5 keep=0x7 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 115000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1200 len=3 tag=0x3
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 115000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1200 len=3 tag=0x3
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 115000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 125000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[2]: tag=0x2 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 125000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[2]: tag=0x2 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 135000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0x3 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_ERROR ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(226) @ 135000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA mismatch beat exp_idx=0 act_idx=0 exp_data=0xa4a5 act_data=0xa6a7a4a5 exp_keep=0x3 act_keep=0x3 exp_last=1 act_last=1
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 145000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1300 len=4 tag=0x4
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 145000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[4]: tag=0x4 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 145000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x4 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 145000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa6a7a4a5 keep=0xf last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 145000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1300 len=4 tag=0x4
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 145000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1300 len=4 tag=0x4
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 145000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 165000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[3]: tag=0x3 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 165000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[3]: tag=0x3 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 175000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0x7 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_ERROR ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(226) @ 175000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA mismatch beat exp_idx=0 act_idx=0 exp_data=0xa7a4a5 act_data=0xa6a7a4a5 exp_keep=0x7 act_keep=0x7 exp_last=1 act_last=1
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 185000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1400 len=5 tag=0x5
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 185000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[5]: tag=0x5 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 185000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x5 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 185000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 185000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[1]: data=0xa1 keep=0x1 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 185000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1400 len=5 tag=0x5
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 185000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1400 len=5 tag=0x5
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 185000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 195000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[4]: tag=0x4 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 195000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[4]: tag=0x4 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 205000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0xf last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 205000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[1]: beat=0 data=0xa6a7a4a5 keep=0xf last=1
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 215000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1500 len=15 tag=0x6
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 215000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[6]: tag=0x6 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 215000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x6 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 215000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 215000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[1]: data=0xa2a3a0a1 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 215000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[2]: data=0xaeafacad keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 215000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[3]: data=0xaba8a9 keep=0x7 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 215000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1500 len=15 tag=0x6
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 215000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1500 len=15 tag=0x6
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 215000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 245000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 245000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[2]: beat=0 data=0xa6a7a4a5 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 245000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[5]: tag=0x5 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 245000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[5]: tag=0x5 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 255000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[1]: data=0xa2a3a0a1 keep=0x1 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_ERROR ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(226) @ 255000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA mismatch beat exp_idx=1 act_idx=1 exp_data=0xa1 act_data=0xa2a3a0a1 exp_keep=0x1 act_keep=0x1 exp_last=1 act_last=1
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 265000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1600 len=16 tag=0x7
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 265000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[7]: tag=0x7 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 265000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x7 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 265000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 265000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[1]: data=0xa2a3a0a1 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 265000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[2]: data=0xaeafacad keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 265000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[3]: data=0xaaaba8a9 keep=0xf last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 265000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1600 len=16 tag=0x7
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 265000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1600 len=16 tag=0x7
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(192) @ 265000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Driving read descriptor
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 275000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 275000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[3]: beat=0 data=0xa6a7a4a5 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 285000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[1]: data=0xa2a3a0a1 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 285000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[4]: beat=1 data=0xa2a3a0a1 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 295000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[2]: data=0xaeafacad keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 295000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[5]: beat=2 data=0xaeafacad keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 295000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[6]: tag=0x6 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 295000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[6]: tag=0x6 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 305000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[3]: data=0xaaaba8a9 keep=0x7 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_ERROR ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(226) @ 305000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA mismatch beat exp_idx=3 act_idx=3 exp_data=0xaba8a9 act_data=0xaaaba8a9 exp_keep=0x7 act_keep=0x7 exp_last=1 act_last=1
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(125) @ 315000: uvm_test_top.env.ref_model [AXI_DMA_REF] accepted descriptor addr=0x1700 len=17 tag=0x8
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(174) @ 315000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP status[8]: tag=0x8 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/model/axi_dma_rd_ref_model.sv(139) @ 315000: uvm_test_top.env.ref_model [AXI_DMA_REF] expected status tag=0x8 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 315000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 315000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[1]: data=0xa2a3a0a1 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 315000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[2]: data=0xaeafacad keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 315000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[3]: data=0xaaaba8a9 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(153) @ 315000: uvm_test_top.env.scoreboard [AXI_DMA_SB] EXP data beat[4]: data=0xb5 keep=0x1 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/driver/rd_desc_driver.sv(112) @ 315000: uvm_test_top.env.rd_agent.driver [RD_DESC_DRIVER] Published accepted descriptor addr=0x1700 len=17 tag=0x8
+# UVM_INFO ./vip/axi_dma_uvc/sequence/rd_len_sweep_sequence.sv(84) @ 315000: uvm_test_top.env.rd_agent.sequencer@@seq [RD_LEN_SWEEP_SEQ] sent descriptor addr=0x1700 len=17 tag=0x8
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 325000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 325000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[6]: beat=0 data=0xa6a7a4a5 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 335000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[1]: data=0xa2a3a0a1 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 335000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[7]: beat=1 data=0xa2a3a0a1 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 345000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[2]: data=0xaeafacad keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 345000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[8]: beat=2 data=0xaeafacad keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 345000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[7]: tag=0x7 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 345000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[7]: tag=0x7 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 355000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[3]: data=0xaaaba8a9 keep=0xf last=1 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 355000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[9]: beat=3 data=0xaaaba8a9 keep=0xf last=1
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 375000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[0]: data=0xa6a7a4a5 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 375000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[10]: beat=0 data=0xa6a7a4a5 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 385000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[1]: data=0xa2a3a0a1 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 385000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[11]: beat=1 data=0xa2a3a0a1 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 395000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[2]: data=0xaeafacad keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 395000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[12]: beat=2 data=0xaeafacad keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 405000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[3]: data=0xaaaba8a9 keep=0xf last=0 id=0x0 dest=0x0 user=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(234) @ 405000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA match[13]: beat=3 data=0xaaaba8a9 keep=0xf last=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(165) @ 405000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX status[8]: tag=0x8 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(201) @ 405000: uvm_test_top.env.scoreboard [AXI_DMA_SB] STATUS match[8]: tag=0x8 error=0x0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(143) @ 415000: uvm_test_top.env.scoreboard [AXI_DMA_SB] RX data beat[4]: data=0xb6b7b4b5 keep=0x1 last=1 id=0x0 dest=0x0 user=0x0
+# UVM_ERROR ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(226) @ 415000: uvm_test_top.env.scoreboard [AXI_DMA_SB] DATA mismatch beat exp_idx=4 act_idx=4 exp_data=0xb5 act_data=0xb6b7b4b5 exp_keep=0x1 act_keep=0x1 exp_last=1 act_last=1
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_objection.svh(1270) @ 1815000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(246) @ 1815000: uvm_test_top.env.scoreboard [AXI_DMA_SB] Observed 19 read-data beats and 8 read-status events
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(251) @ 1815000: uvm_test_top.env.scoreboard [AXI_DMA_SB] Status matches=8 mismatches=0 pending_exp=0 pending_act=0
+# UVM_INFO ./vip/axi_dma_uvc/scoreboard/axi_dma_scoreboard.sv(261) @ 1815000: uvm_test_top.env.scoreboard [AXI_DMA_SB] Data matches=13 mismatches=6 pending_exp=0 pending_act=0
+# UVM_INFO /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_report_server.svh(847) @ 1815000: reporter [UVM/REPORT/SERVER] 
+# --- UVM Report Summary ---
+# 
+# ** Report counts by severity
+# UVM_INFO :  135
+# UVM_WARNING :    0
+# UVM_ERROR :    6
+# UVM_FATAL :    0
+# ** Report counts by id
+# [AXIS_RD_MON]     1
+# [AXI_DMA_ENV]     1
+# [AXI_DMA_REF]    17
+# [AXI_DMA_SB]    85
+# [BASE_TEST]     2
+# [NO_DPI_TSTNAME]     1
+# [RD_DESC_AGENT]     1
+# [RD_DESC_DRIVER]    17
+# [RD_DESC_SEQUENCER]     1
+# [RD_LEN_SWEEP_SEQ]     9
+# [RD_LEN_SWEEP_TEST]     1
+# [RD_STATUS_MON]     1
+# [RNTST]     1
+# [TEST_DONE]     1
+# [UVM/COMP/NAMECHECK]     1
+# [UVM/RELNOTES]     1
+# 
+# ** Note: $finish    : /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/base/uvm_root.svh(517)
+#    Time: 1815 ns  Iteration: 68  Instance: /top_tb
+# End time: 17:21:35 on Jun 21,2026, Elapsed time: 0:00:04
+# Errors: 0, Warnings: 1

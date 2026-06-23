@@ -110,6 +110,11 @@ class base_test extends uvm_test;
         // Temporary wait used only for the first skeleton test.
         // Later this will be replaced by starting a sequence, waiting for the
         // scoreboard to finish, or waiting for a specific DUT event.
+        //
+        // Real-project style:
+        // Do not start rd_desc_smoke_sequence directly from base_test.  Keep
+        // base_test reusable and create a derived test, such as rd_smoke_test,
+        // to express this specific scenario.
         #100ns;
 
         // Drop the objection to tell UVM: "this test has finished."

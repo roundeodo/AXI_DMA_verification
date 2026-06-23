@@ -23,8 +23,8 @@
 //
 // Follow the same pattern as dma_rd_desc_item.sv:
 //
-//   import uvm_pkg::*;
-//   `include "uvm_macros.svh"
+import uvm_pkg::*;
+`include "uvm_macros.svh"
 
 
 // TODO 2: create a parameterized class.
@@ -38,7 +38,24 @@
 // Why parameterized:
 // TAG_WIDTH mirrors the DUT/interface tag width.  The status item should follow
 // that width instead of hard-coding 8 everywhere.
+class rd_status_item #(
+    parameter int TAG_WIDTH = 8
+) extends uvm_sequence_item;
 
+    bit [TAG_WIDTH-1:0] tag;
+    bit [3:0] error;
+
+    time sample_time;
+
+    `uvm_object_param_utils_begin(rd_status_item)
+        `uvm_field_int(tag,   UVM_ALL_ON)
+        `uvm_field_int(error, UVM_ALL_ON)
+    `uvm_object_utils_end
+    
+    function new(string name = "rd_status_item");
+        super.new(name);
+    endfunction //new()
+endclass //rd_status_item #() extends uvm_sequence_item
 
 // TODO 3: add observed status fields inside the class.
 //

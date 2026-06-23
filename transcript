@@ -1,10 +1,12 @@
-# do uvm_start.do
+# set TESTNAME rd_len_sweep_test
+# rd_len_sweep_test
+#  do uvm_start.do
 # /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src
 # QuestaSim-64 vmap 2022.4 Lib Mapping Utility 2022.10 Oct 18 2022
 # vmap work work 
 # Modifying modelsim.ini
 # QuestaSim-64 vlog 2022.4 Compiler 2022.10 Oct 18 2022
-# Start time: 16:29:43 on Jun 19,2026
+# Start time: 23:08:14 on Jun 21,2026
 # vlog -sv12compat -mfcu "+define+UVM_NO_DPI" "+incdir+/esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src" /esat/micas-data/software/Mentor/questasim_2022.4/verilog_src/uvm-1.2/src/uvm_pkg.sv -f flist.f 
 # -- Compiling package uvm_pkg (uvm-1.2 Built-in)
 # -- Compiling interface axi_dma_if
@@ -19,5 +21,5 @@
 # Top level modules:
 # 	axi_dma
 # 	top_tb
-# End time: 16:29:44 on Jun 19,2026, Elapsed time: 0:00:01
+# End time: 23:08:15 on Jun 21,2026, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0
